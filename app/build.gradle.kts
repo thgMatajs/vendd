@@ -79,4 +79,6 @@ dependencies {
     ksp(libs.room.compiler)
     implementation(libs.room.ktx)
     //endregion
+
+    implementation(libs.retrofit.converter.gson)
 }
