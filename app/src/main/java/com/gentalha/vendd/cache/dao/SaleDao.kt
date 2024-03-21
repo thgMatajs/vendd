@@ -7,6 +7,7 @@ import com.gentalha.vendd.cache.entity.SaleEntity
 
 @Dao
 interface SaleDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun add(sales: List<SaleEntity>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun createSale(sales: List<SaleEntity>)
+
 }

@@ -7,23 +7,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gentalha.vendd.ui.components.Header
 import com.gentalha.vendd.ui.components.ProductForm
 import com.gentalha.vendd.ui.components.ProductItem
 import com.gentalha.vendd.ui.components.ProductsIncluded
-import com.gentalha.vendd.ui.model.ProductUi
+import com.gentalha.vendd.ui.state.SaleUiState
 import com.gentalha.vendd.ui.theme.Black
 import com.gentalha.vendd.ui.theme.DarkBlack
 import com.gentalha.vendd.ui.theme.DarkGray
 import com.gentalha.vendd.ui.theme.LightGray
 import com.gentalha.vendd.ui.theme.TextLight
+import com.gentalha.vendd.ui.viewmodel.SaleViewModel
 import java.math.BigDecimal
 
 @Composable
-fun CreateSaleScreen() {
+fun CreateSaleScreen(viewModel: SaleViewModel) {
     val saleId: BigDecimal = BigDecimal.ONE
+
+    val uiState: SaleUiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.getProducts()
+    }
 
     LazyColumn(
         Modifier
@@ -35,49 +45,44 @@ fun CreateSaleScreen() {
         }
         item {
             ProductForm {
-                println("THG_$it")
+                viewModel.addProduct(it)
             }
         }
 
-        itemsIndexed(
-            listOf(
-                ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-            )
-        ) { position, product ->
-            ProductItem(
-                product = product,
-                background = if (position % 2 == 0) {
-                    DarkGray
-                } else {
-                    LightGray
-                },
-                textColor = if (position % 2 == 0) {
-                    TextLight
-                } else {
-                    Black
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-            )
-        }
-
-        item {
-            ProductsIncluded(
-                products = listOf(
-                    ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                    ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                    ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                    ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                    ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                    ProductUi("abc", 1, 1.0.toBigDecimal(), 1.0.toBigDecimal()),
-                )
-            )
+        when (uiState) {
+            SaleUiState.Empty -> {}
+            is SaleUiState.Failure -> TODO()
+            SaleUiState.Loading -> {}
+            is SaleUiState.Success -> {
+                val products = (uiState as SaleUiState.Success).products
+                itemsIndexed(
+                    products
+                ) { position, product ->
+                    ProductItem(
+                        product = product,
+                        background = if (position % 2 == 0) {
+                            DarkGray
+                        } else {
+                            LightGray
+                        },
+                        textColor = if (position % 2 == 0) {
+                            TextLight
+                        } else {
+                            Black
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }
+                item {
+                    ProductsIncluded(
+                        products = products,
+                        cancelOnClick = { viewModel.clear() },
+                        saveOnClick = {}
+                    )
+                }
+            }
         }
     }
 }

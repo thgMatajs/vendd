@@ -21,7 +21,11 @@ import com.gentalha.vendd.ui.theme.Black
 import java.math.BigDecimal
 
 @Composable
-fun ProductsIncluded(products: List<Product>) {
+fun ProductsIncluded(
+    products: List<Product>,
+    cancelOnClick: () -> Unit,
+    saveOnClick: (() -> Unit)
+) {
 
     var totalSale by rememberSaveable {
         mutableStateOf(BigDecimal.ZERO)
@@ -65,6 +69,7 @@ fun ProductsIncluded(products: List<Product>) {
                     .weight(1f)
                     .padding(start = 16.dp, end = 8.dp)
             ) {
+                cancelOnClick()
             }
             PrimaryButton(
                 label = "Salvar",
@@ -72,6 +77,7 @@ fun ProductsIncluded(products: List<Product>) {
                     .weight(1f)
                     .padding(start = 8.dp, end = 16.dp)
             ) {
+                saveOnClick()
             }
         }
 
