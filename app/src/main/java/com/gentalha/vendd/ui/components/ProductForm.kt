@@ -22,13 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gentalha.vendd.model.Product
+import com.gentalha.vendd.ui.model.ProductUi
 import com.gentalha.vendd.ui.theme.Black
 import com.gentalha.vendd.ui.theme.Lemon
 import com.gentalha.vendd.ui.theme.TextLight
 import java.math.BigDecimal
 
 @Composable
-fun ProductForm() {
+fun ProductForm(insertOnClick: (Product) -> Unit) {
+    var name by rememberSaveable {
+        mutableStateOf("")
+    }
+
     var itemTotalPrice by rememberSaveable {
         mutableStateOf(BigDecimal.ZERO)
     }
@@ -45,7 +51,7 @@ fun ProductForm() {
         Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .background(Black, RoundedCornerShape(30.dp))
+            .background(Black, RoundedCornerShape(24.dp))
     ) {
         InputTextField(
             label = "Nome do cliente", modifier = Modifier
@@ -56,7 +62,9 @@ fun ProductForm() {
             label = "Nome do produto", modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth()
-        ) {}
+        ) {
+            name = it
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -92,7 +100,16 @@ fun ProductForm() {
             Spacer(modifier = Modifier.size(16.dp))
 
             Button(
-                onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(
+                onClick = {
+                    insertOnClick(
+                        ProductUi(
+                            name,
+                            qtt.toInt(),
+                            price,
+                            itemTotalPrice
+                        )
+                    )
+                }, colors = ButtonDefaults.buttonColors(
                     containerColor = Lemon
                 ), modifier = Modifier.weight(1f)
             ) {
