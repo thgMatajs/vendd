@@ -3,14 +3,10 @@ package com.gentalha.vendd.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import com.gentalha.vendd.model.Product
 import com.gentalha.vendd.ui.model.ProductUi
 import com.gentalha.vendd.ui.theme.Black
-import com.gentalha.vendd.ui.theme.Lemon
 import com.gentalha.vendd.ui.theme.TextLight
 import java.math.BigDecimal
 
@@ -97,9 +92,10 @@ fun ProductForm(insertOnClick: (Product) -> Unit) {
                 Text(text = "R$ $itemTotalPrice", color = TextLight, fontSize = 12.sp)
             }
 
-            Spacer(modifier = Modifier.size(16.dp))
+            MediumSpacer()
 
-            Button(
+            SecondaryButton(
+                label = "Incluir",
                 onClick = {
                     insertOnClick(
                         ProductUi(
@@ -109,12 +105,9 @@ fun ProductForm(insertOnClick: (Product) -> Unit) {
                             itemTotalPrice
                         )
                     )
-                }, colors = ButtonDefaults.buttonColors(
-                    containerColor = Lemon
-                ), modifier = Modifier.weight(1f)
-            ) {
-                Text(text = "Incluir", color = Black)
-            }
+                },
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
