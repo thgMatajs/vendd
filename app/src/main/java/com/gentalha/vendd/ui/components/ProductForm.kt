@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,11 +16,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.gentalha.vendd.model.Product
 import com.gentalha.vendd.ui.model.ProductUi
 import com.gentalha.vendd.ui.theme.Black
-import com.gentalha.vendd.ui.theme.TextLight
 import java.math.BigDecimal
 
 @Composable
@@ -88,13 +85,13 @@ fun ProductForm(insertOnClick: (Product) -> Unit) {
             Column(
                 horizontalAlignment = Alignment.Start,
             ) {
-                Text(text = "Valor total do item", color = TextLight, fontSize = 12.sp)
-                Text(text = "R$ $itemTotalPrice", color = TextLight, fontSize = 12.sp)
+                SmallText(text = "Valor total do item")
+                SmallText(text = "R$ $itemTotalPrice")
             }
 
             MediumSpacer()
 
-            SecondaryButton(
+            PrimaryButton(
                 label = "Incluir",
                 onClick = {
                     insertOnClick(
