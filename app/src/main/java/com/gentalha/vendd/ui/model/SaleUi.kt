@@ -6,5 +6,6 @@ import com.gentalha.vendd.model.Sale
 data class SaleUi(
     override val id: Long? = null,
     override val clientName: String,
-    override val products: List<Product>
-): Sale
+    override val products: List<Product>,
+    override val totalSalesPrice: Float
+) : Sale

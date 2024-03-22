@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -28,12 +29,16 @@ import com.gentalha.vendd.ui.theme.DarkGray
 import com.gentalha.vendd.ui.theme.LightGray
 import com.gentalha.vendd.ui.theme.TextLight
 import com.gentalha.vendd.ui.viewmodel.SaleViewModel
+import java.math.BigDecimal
 import java.math.BigInteger
 
 @Composable
 fun CreateSaleScreen(viewModel: SaleViewModel) {
     var saleId by rememberSaveable {
         mutableIntStateOf(BigInteger.ONE.toInt())
+    }
+    var totalSalePrice by rememberSaveable {
+        mutableStateOf(BigDecimal.ZERO)
     }
 
     val uiState: ProductUiState by viewModel.uiState.collectAsState()
@@ -54,7 +59,7 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
                 is SaleUiState.Failure -> {}
                 SaleUiState.Loading -> {}
                 is SaleUiState.Success -> {
-                    saleId = (saleUiState as SaleUiState.Success).sale.id?.toInt()
+                    saleId = (saleUiState as SaleUiState.Success).sales.last().id?.toInt()
                         ?.plus(BigInteger.ONE.toInt())
                         ?: BigInteger.ZERO.toInt()
                 }
@@ -62,8 +67,9 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
             Header(title = "Numero do pedido: $saleId")
         }
         item {
-            ProductForm {
-                viewModel.addProduct(it)
+            ProductForm { product, _, totalPrice ->
+                viewModel.addProduct(product)
+                totalSalePrice = totalPrice
             }
         }
 
@@ -100,7 +106,9 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
                         saveOnClick = {
                             viewModel.createSale(
                                 SaleUi(
-                                    clientName = "", products = emptyList()
+                                    clientName = "",
+                                    products = emptyList(),
+                                    totalSalesPrice = totalSalePrice.toFloat()
                                 )
                             )
                         }

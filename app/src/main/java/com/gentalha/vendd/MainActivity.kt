@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.gentalha.vendd.ui.screens.CreateSaleScreen
+import com.gentalha.vendd.ui.screens.HomeScreen
 import com.gentalha.vendd.ui.theme.DarkBlack
 import com.gentalha.vendd.ui.theme.VenddTheme
 import com.gentalha.vendd.ui.viewmodel.SaleViewModel
@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    val viewModel: SaleViewModel by viewModels()
+    private val viewModel: SaleViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,7 +27,8 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize(),
                     color = DarkBlack
                 ) {
-                    CreateSaleScreen(viewModel)
+                    HomeScreen(viewModel)
+
                 }
             }
         }

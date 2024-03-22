@@ -14,4 +14,7 @@ interface SaleDao {
     @Query("SELECT * FROM sales")
     suspend fun getSales(): List<SaleEntity>
 
+    @Query("SELECT SUM(totalSalesPrice) FROM sales")
+    suspend fun getTotalSales(): Float
+
 }

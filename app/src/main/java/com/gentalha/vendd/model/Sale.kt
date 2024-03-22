@@ -4,4 +4,5 @@ interface Sale {
     val id: Long?
     val clientName: String
     val products: List<Product>
+    val totalSalesPrice: Float
 }

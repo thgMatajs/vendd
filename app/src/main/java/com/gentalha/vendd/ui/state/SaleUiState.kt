@@ -8,7 +8,7 @@ sealed class SaleUiState {
     data object Empty : SaleUiState()
 
     data class Success(
-        val sale: Sale
+        val sales: List<Sale>
     ) : SaleUiState()
 
     data class Failure(

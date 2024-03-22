@@ -22,7 +22,7 @@ import com.gentalha.vendd.ui.theme.Black
 import java.math.BigDecimal
 
 @Composable
-fun ProductForm(insertOnClick: (Product) -> Unit) {
+fun ProductForm(insertOnClick: (Product, String, BigDecimal) -> Unit) {
     var name by rememberSaveable {
         mutableStateOf("")
     }
@@ -100,7 +100,9 @@ fun ProductForm(insertOnClick: (Product) -> Unit) {
                             qtt.toInt(),
                             price,
                             itemTotalPrice
-                        )
+                        ),
+                        "",
+                        itemTotalPrice
                     )
                 },
                 modifier = Modifier.weight(1f)

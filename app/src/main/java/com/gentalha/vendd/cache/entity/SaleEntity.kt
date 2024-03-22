@@ -9,10 +9,12 @@ data class SaleEntity(
     @PrimaryKey(autoGenerate = true) override val id: Long? = null,
     override val clientName: String,
     override val products: List<ProductEntity>,
+    override val totalSalesPrice: Float
 ) : Sale
 
 
 fun Sale.toEntity() = SaleEntity(
     clientName = this.clientName,
-    products = this.products.map { it.toEntity() }
+    products = this.products.map { it.toEntity() },
+    totalSalesPrice = this.totalSalesPrice
 )

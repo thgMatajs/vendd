@@ -12,10 +12,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,6 +36,12 @@ class SaleViewModel @Inject constructor(
     )
 
     val saleUiState = _saleUiState.asStateFlow()
+
+    private val _totalSales = MutableStateFlow<BigDecimal>(
+        BigDecimal.ZERO
+    )
+
+    val totalSales = _totalSales.asStateFlow()
 
     init {
         getProducts()
@@ -114,14 +122,22 @@ class SaleViewModel @Inject constructor(
                 .catch { error ->
                     _saleUiState.update { SaleUiState.Failure(error) }
                 }
-                .collect { sales ->
+                .collectLatest { sales ->
                     _saleUiState.update {
                         if (sales.isEmpty())
                             SaleUiState.Empty
                         else
-                            SaleUiState.Success(sales.last())
+                            SaleUiState.Success(sales)
                     }
                 }
+        }
+    }
+
+    fun getTotalSales() {
+        viewModelScope.launch {
+            repository.getTotalSales().runCatching {
+                _totalSales.update { this.toBigDecimal() }
+            }
         }
     }
 }

@@ -37,4 +37,6 @@ class SaleRepository @Inject constructor(
         )
     }
 
+    suspend fun getTotalSales() = saleDao.getTotalSales()
+
 }
