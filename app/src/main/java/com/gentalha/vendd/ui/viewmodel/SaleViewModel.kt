@@ -37,6 +37,7 @@ class SaleViewModel @Inject constructor(
 
     init {
         getProducts()
+        getSale()
     }
 
     fun addProduct(product: Product) {
@@ -100,20 +101,27 @@ class SaleViewModel @Inject constructor(
     }
 
     fun createSale(sale: Sale) {
-        println("THG_create_viewmodel $sale")
         viewModelScope.launch {
-
             repository.createSale(sale)
         }
-//        viewModelScope.launch {
-//            repository.createSale(sale)
-//                .flowOn(Dispatchers.IO)
-//                .onStart { _saleUiState.update { SaleUiState.Loading } }
-//                .catch { error ->
-//                    _saleUiState.update { SaleUiState.Failure(error) }
-//                }.onCompletion {
-//                    _saleUiState.update { SaleUiState.Success(sale) }
-//                }
-//        }
+    }
+
+    fun getSale() {
+        viewModelScope.launch {
+            repository.getSales()
+                .flowOn(Dispatchers.IO)
+                .onStart { _saleUiState.update { SaleUiState.Loading } }
+                .catch { error ->
+                    _saleUiState.update { SaleUiState.Failure(error) }
+                }
+                .collect { sales ->
+                    _saleUiState.update {
+                        if (sales.isEmpty())
+                            SaleUiState.Empty
+                        else
+                            SaleUiState.Success(sales.last())
+                    }
+                }
+        }
     }
 }
