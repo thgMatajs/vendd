@@ -6,7 +6,13 @@ import com.gentalha.vendd.model.Sale
 
 @Entity(tableName = "sales")
 data class SaleEntity(
-    @PrimaryKey(autoGenerate = true) override val id: Long,
+    @PrimaryKey(autoGenerate = true) override val id: Long? = null,
     override val clientName: String,
     override val products: List<ProductEntity>,
 ) : Sale
+
+
+fun Sale.toEntity() = SaleEntity(
+    clientName = this.clientName,
+    products = this.products.map { it.toEntity() }
+)

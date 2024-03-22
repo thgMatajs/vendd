@@ -9,3 +9,10 @@ data class ProductEntity(
     override val price: BigDecimal,
     override val totalPrice: BigDecimal
 ): Product
+
+fun Product.toEntity() = ProductEntity(
+    this.name,
+    this.quantity,
+    this.price,
+    this.totalPrice
+)

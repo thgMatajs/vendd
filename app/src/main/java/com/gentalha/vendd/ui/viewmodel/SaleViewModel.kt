@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gentalha.vendd.data.SaleRepository
 import com.gentalha.vendd.model.Product
+import com.gentalha.vendd.model.Sale
+import com.gentalha.vendd.ui.state.ProductUiState
 import com.gentalha.vendd.ui.state.SaleUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,11 +23,17 @@ class SaleViewModel @Inject constructor(
     private val repository: SaleRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<SaleUiState>(
-        SaleUiState.Loading
+    private val _uiState = MutableStateFlow<ProductUiState>(
+        ProductUiState.Loading
     )
 
     val uiState = _uiState.asStateFlow()
+
+    private val _saleUiState = MutableStateFlow<SaleUiState>(
+        SaleUiState.Loading
+    )
+
+    val saleUiState = _saleUiState.asStateFlow()
 
     init {
         getProducts()
@@ -35,13 +43,13 @@ class SaleViewModel @Inject constructor(
         viewModelScope.launch {
             repository.addProduct(product)
                 .flowOn(Dispatchers.IO)
-                .onStart { _uiState.update { SaleUiState.Loading } }
+                .onStart { _uiState.update { ProductUiState.Loading } }
                 .catch { error ->
-                    _uiState.update { SaleUiState.Failure(error) }
+                    _uiState.update { ProductUiState.Failure(error) }
                 }
                 .collect { products ->
                     _uiState.update {
-                        SaleUiState.Success(
+                        ProductUiState.Success(
                             products
                         )
                     }
@@ -53,16 +61,16 @@ class SaleViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getProducts()
                 .flowOn(Dispatchers.IO)
-                .onStart { _uiState.update { SaleUiState.Loading } }
+                .onStart { _uiState.update { ProductUiState.Loading } }
                 .catch { error ->
-                    _uiState.update { SaleUiState.Failure(error) }
+                    _uiState.update { ProductUiState.Failure(error) }
                 }
                 .collect { products ->
                     _uiState.update {
                         if (products.isEmpty())
-                            SaleUiState.Empty
+                            ProductUiState.Empty
                         else
-                            SaleUiState.Success(
+                            ProductUiState.Success(
                                 products
                             )
                     }
@@ -74,20 +82,38 @@ class SaleViewModel @Inject constructor(
         viewModelScope.launch {
             repository.clearProducts()
                 .flowOn(Dispatchers.IO)
-                .onStart { _uiState.update { SaleUiState.Loading } }
+                .onStart { _uiState.update { ProductUiState.Loading } }
                 .catch { error ->
-                    _uiState.update { SaleUiState.Failure(error) }
+                    _uiState.update { ProductUiState.Failure(error) }
                 }
                 .collect { products ->
                     _uiState.update {
                         if (products.isEmpty())
-                            SaleUiState.Empty
+                            ProductUiState.Empty
                         else
-                            SaleUiState.Success(
+                            ProductUiState.Success(
                                 products
                             )
                     }
                 }
         }
+    }
+
+    fun createSale(sale: Sale) {
+        println("THG_create_viewmodel $sale")
+        viewModelScope.launch {
+
+            repository.createSale(sale)
+        }
+//        viewModelScope.launch {
+//            repository.createSale(sale)
+//                .flowOn(Dispatchers.IO)
+//                .onStart { _saleUiState.update { SaleUiState.Loading } }
+//                .catch { error ->
+//                    _saleUiState.update { SaleUiState.Failure(error) }
+//                }.onCompletion {
+//                    _saleUiState.update { SaleUiState.Success(sale) }
+//                }
+//        }
     }
 }

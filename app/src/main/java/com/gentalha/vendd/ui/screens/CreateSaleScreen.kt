@@ -12,11 +12,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gentalha.vendd.model.Product
 import com.gentalha.vendd.ui.components.Header
 import com.gentalha.vendd.ui.components.ProductForm
 import com.gentalha.vendd.ui.components.ProductItem
 import com.gentalha.vendd.ui.components.ProductsIncluded
-import com.gentalha.vendd.ui.state.SaleUiState
+import com.gentalha.vendd.ui.model.SaleUi
+import com.gentalha.vendd.ui.state.ProductUiState
 import com.gentalha.vendd.ui.theme.Black
 import com.gentalha.vendd.ui.theme.DarkBlack
 import com.gentalha.vendd.ui.theme.DarkGray
@@ -29,7 +31,7 @@ import java.math.BigDecimal
 fun CreateSaleScreen(viewModel: SaleViewModel) {
     val saleId: BigDecimal = BigDecimal.ONE
 
-    val uiState: SaleUiState by viewModel.uiState.collectAsState()
+    val uiState: ProductUiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.getProducts()
@@ -50,11 +52,11 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
         }
 
         when (uiState) {
-            SaleUiState.Empty -> {}
-            is SaleUiState.Failure -> TODO()
-            SaleUiState.Loading -> {}
-            is SaleUiState.Success -> {
-                val products = (uiState as SaleUiState.Success).products
+            ProductUiState.Empty -> {}
+            is ProductUiState.Failure -> TODO()
+            ProductUiState.Loading -> {}
+            is ProductUiState.Success -> {
+                val products = (uiState as ProductUiState.Success).products
                 itemsIndexed(
                     products
                 ) { position, product ->
@@ -79,7 +81,13 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
                     ProductsIncluded(
                         products = products,
                         cancelOnClick = { viewModel.clear() },
-                        saveOnClick = {}
+                        saveOnClick = {
+                            viewModel.createSale(
+                                SaleUi(
+                                    clientName = "", products = emptyList<Product>()
+                                )
+                            )
+                        }
                     )
                 }
             }
