@@ -3,20 +3,18 @@ package com.gentalha.vendd
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.gentalha.vendd.ui.screens.HomeScreen
+import cafe.adriel.voyager.navigator.Navigator
+import cafe.adriel.voyager.transitions.SlideTransition
+import com.gentalha.vendd.ui.screens.Home
 import com.gentalha.vendd.ui.theme.DarkBlack
 import com.gentalha.vendd.ui.theme.VenddTheme
-import com.gentalha.vendd.ui.viewmodel.SaleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    private val viewModel: SaleViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -27,8 +25,9 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize(),
                     color = DarkBlack
                 ) {
-                    HomeScreen(viewModel)
-
+                    Navigator(screen = Home()) { navigator ->
+                        SlideTransition(navigator = navigator)
+                    }
                 }
             }
         }

@@ -26,7 +26,7 @@ import com.gentalha.vendd.ui.viewmodel.SaleViewModel
 import java.math.BigDecimal
 
 @Composable
-fun HomeScreen(viewModel: SaleViewModel) {
+fun HomeScreen(viewModel: SaleViewModel, newSaleOnClick: () -> Unit) {
     var totalSales by rememberSaveable {
         mutableStateOf(BigDecimal.ZERO)
     }
@@ -51,7 +51,7 @@ fun HomeScreen(viewModel: SaleViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-        ) {}
+        ) { newSaleOnClick() }
 
         LargeSpacer()
 

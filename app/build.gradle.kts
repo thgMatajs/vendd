@@ -81,4 +81,13 @@ dependencies {
     //endregion
 
     implementation(libs.retrofit.converter.gson)
+
+    //region voyager navigation
+    implementation(libs.voyager.navigator)
+    implementation(libs.voyager.tabNavigator)
+    implementation(libs.voyager.screenModel)
+    implementation(libs.voyager.transitions)
+    implementation(libs.voyager.hilt)
+    //endregion
+
 }

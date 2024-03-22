@@ -16,6 +16,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.gentalha.vendd.ui.components.Header
 import com.gentalha.vendd.ui.components.ProductForm
 import com.gentalha.vendd.ui.components.ProductItem
@@ -34,6 +36,8 @@ import java.math.BigInteger
 
 @Composable
 fun CreateSaleScreen(viewModel: SaleViewModel) {
+    val navigator = LocalNavigator.currentOrThrow
+
     var saleId by rememberSaveable {
         mutableIntStateOf(BigInteger.ONE.toInt())
     }
@@ -102,7 +106,10 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
                 item {
                     ProductsIncluded(
                         products = products,
-                        cancelOnClick = { viewModel.clear() },
+                        cancelOnClick = {
+                            viewModel.clear()
+                            navigator.pop()
+                        },
                         saveOnClick = {
                             viewModel.createSale(
                                 SaleUi(
@@ -111,6 +118,7 @@ fun CreateSaleScreen(viewModel: SaleViewModel) {
                                     totalSalesPrice = totalSalePrice.toFloat()
                                 )
                             )
+                            navigator.pop()
                         }
                     )
                 }
